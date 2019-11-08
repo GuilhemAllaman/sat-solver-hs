@@ -62,10 +62,10 @@ reduce :: Fml a -> Fml a
 reduce (Imply a b) = Or (Not $ reduce a) $ reduce b
 reduce (Equiv a b) = And (Or (Not $ reduce a) $ reduce b) $ Or (Not $ reduce b) $ reduce a
 reduce (XOr a b) = Or (And a $ Not b) (And b $ Not a)
-reduce (Or a b) = Or (reduce a $ reduce b)
-reduce (And a b) = And (reduce a $ reduce b)
+reduce (Or a b) = Or (reduce a)  (reduce b)
+reduce (And a b) = And (reduce a) ( reduce b)
 reduce (Not a) = Not $ reduce a
-reduce (Final a) = a
+reduce (Final a) = Final a
 
 
 --toCNF :: Fml a -> Fml
