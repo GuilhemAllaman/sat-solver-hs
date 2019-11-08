@@ -7,7 +7,8 @@ module Data.Algorithm.Sat.Fml.Model
 
 import qualified Data.Algorithm.Sat.Fml as Fml
 
---atLeast :: (Eq t, Num t, Ord a) => t -> [Fml.Fml a] -> Fml.Fml
+{-atLeast :: (Eq t, Num t, Ord a) => t -> [Fml.Fml a] -> Fml.Fml a
+atLeast _ [] = error "Empty list"-}
 
 --anyOf :: (Ord a) => [Fml.Fml a] -> Fml.Fml
 

@@ -4,4 +4,4 @@ stack build
 echo ""
 echo "*** build ended ***"
 echo ""
-stack exec --ghci sat-solver-hs-exe
+stack exec sat-solver-hs-exe

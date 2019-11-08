@@ -1,9 +1,9 @@
 module Data.Algorithm.Sat.Fml.Examples
   (
-{-  fml1
+    fml1
 , fml2
 , fml3
-, fml4
+ {-, fml4
 , fml5
 , fml6
 , fml7
@@ -26,7 +26,7 @@ vD = Fml.mkVar 'D'
 vE = Fml.mkVar 'E'
 vF = Fml.mkVar 'F'
 
-{-
+
 -- C + -(BC)
 fml1 :: Fml.Fml Char
 fml1 = Fml.Or vC (Fml.Not (Fml.And vB vC))
@@ -39,6 +39,7 @@ fml2 = Fml.multAnd [f, g, h]
     g = Fml.Or (Fml.Not vA) vB
     h = Fml.Or (Fml.Not vB) vB
 
+
 -- (A + C)(AD + A(-D)) + AC + C
 fml3 :: Fml.Fml Char
 fml3 = Fml.multOr [f, g, h]
@@ -47,6 +48,7 @@ fml3 = Fml.multOr [f, g, h]
     g = Fml.And vA vC
     h = vC
 
+ {-
 -- (-A)(A + B) + (B + AA)(A + (-B)):
 fml4 :: Fml.Fml Char
 fml4 = Fml.Or f g
