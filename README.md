@@ -5,7 +5,7 @@ Sat solver to resolve CNF (Conjunctive Normal Forms)
 Written in Haskell
 
 Authors :
-Julien Nivois jnivoix@etud.u-pem.fr
+Julien Nivoix jnivoix@etud.u-pem.fr
 Guilhem Allaman gallaman@etud.u-pem.fr
 ESIPE - UPEM - 2019
 
