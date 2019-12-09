@@ -78,6 +78,12 @@ toCNF (XOr a b) = toCNF $ Or (And a (Not b)) (And (Not a) b)
 toCNF (Or a b) = multAnd [Or p q | p <- aux a, q <- aux b]
   where
     aux = findClauses . toCNF
+toCNF (Not a) = aux a
+  where
+    aux (Final a) = Not (Final a)
+    aux (Not a) = toCNF a
+    aux (And a b) = toCNF $ Or (Not a) (Not b)
+    aux (Or a b) = toCNF $ And (Not a) (Not b)
 
 -- On suppose la formule en entrée sous forme CNF
 findClauses :: Fml a -> [Fml a]
