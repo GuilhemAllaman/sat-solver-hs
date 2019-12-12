@@ -2,11 +2,13 @@ module Main where
 
 import qualified Data.Algorithm.Sat.Fml.Examples as Ex
 import qualified Data.Algorithm.Sat.Fml as Fml
+import qualified Data.Algorithm.Sat.Lit as Lit
+import qualified Data.Algorithm.Sat.Var as Var
 import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver as Solver
 
-fmlPrinter :: (Ord a, Show a) => Fml.Fml a -> String
-fmlPrinter a = "Raw :\n"
+fmlPrinter :: Fml.Fml Char -> String
+fmlPrinter a = "\n\nRaw :\n"
   ++ (Fml.prettyPrinter a)
   ++ "\nReduced :\n"
   ++ (Fml.prettyPrinter $ Fml.reduce a)
@@ -15,10 +17,12 @@ fmlPrinter a = "Raw :\n"
   ++ "\nLits :\n"
   ++ (show . CNFFml.litList $ propered)
   ++ "\nMost occuring lit :\n"
-  ++ (show . CNFFml.mostCommon . CNFFml.litList $ propered)
+  ++ (show . CNFFml.findLitToProcess $ propered)
   ++ "\nClauses :\n"
   ++ (show . CNFFml.getClauses $ propered)
   ++ "\n"
+  ++ "simplify \n"
+  ++ (show . CNFFml.getClauses $ Solver.simplified propered )
   where propered = Solver.preProcess a
 
 main :: IO ()

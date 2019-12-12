@@ -5,7 +5,8 @@ module Data.Algorithm.Sat.Solver.CNFFml
     unitaryClause,
     mostCommon,
     litList,
-    mostOccurentLit
+    mostOccurentLit,
+    findLitToProcess
   ) where
 
 import qualified Data.List as L
