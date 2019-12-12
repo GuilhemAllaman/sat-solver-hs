@@ -5,7 +5,7 @@ import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver as Solver
 
-fmlPrinter :: Show a => Fml.Fml a -> String
+fmlPrinter :: (Ord a, Show a) => Fml.Fml a -> String
 fmlPrinter a = "Raw :\n"
   ++ (Fml.prettyPrinter a)
   ++ "\nReduced :\n"
@@ -14,6 +14,8 @@ fmlPrinter a = "Raw :\n"
   ++ (Fml.prettyPrinter $ Fml.toCNF a)
   ++ "\nLits :\n"
   ++ (show . CNFFml.litList $ propered)
+  ++ "\nMost occuring lit :\n"
+  ++ (show . CNFFml.mostCommon . CNFFml.litList $ propered)
   ++ "\nClauses :\n"
   ++ (show . CNFFml.getClauses $ propered)
   ++ "\n"

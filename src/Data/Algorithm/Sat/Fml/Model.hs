@@ -11,7 +11,7 @@ import qualified Data.List as L
 import qualified Data.Algorithm.Sat.Fml as Fml
 
 atLeast :: (Ord a) => Int -> [Fml.Fml a] -> Fml.Fml a
--- atLeast _ [] = error "Empty list"
+-- TODO
 atLeast n l = Fml.multOr (L.take n l)
 
 anyOf :: (Ord a) => [Fml.Fml a] -> Fml.Fml a

@@ -3,12 +3,14 @@ module Data.Algorithm.Sat.Solver.CNFFml
     CNFFml(..),
     fmlToCNFFml,
     unitaryClause,
+    mostCommon,
     litList,
     mostOccurentLit
   ) where
 
 import qualified Data.List as L
 import qualified Data.Map as M
+import qualified Data.Function as F
 import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.Algorithm.Sat.Solver.Clause as Clause
@@ -43,21 +45,24 @@ unitaryClause = aux . getClauses
       | length (Clause.getLits x) == 1 = Just x
       | otherwise = aux xs
 
+-- |Looks for the most common element of a list
+mostCommon :: (Ord a)  => [a] -> Maybe a
+mostCommon [] = Nothing
+mostCommon a = Just . L.head . L.maximumBy (compare `F.on` L.length) . L.group $ L.sort a
+
 -- |Returns a list of all Lits contained in the CNFFml
 litList :: CNFFml a -> [Lit.Lit a]
--- ATTENTION : dans cette implémentation, les lits ne sont pas uniques, il faudrait les rendre uniques
 litList = aux . getClauses
   where
     aux [] = []
     aux a = concat [Clause.getLits x | x <- a]
 
+-- |Looks for the most occurent Lit in all CNFFml's Lits
+mostOccurentLit :: (Ord a) =>  CNFFml a -> Maybe (Lit.Lit a)
+mostOccurentLit a = mostCommon $ litList a
 
--- |Creates an occurence map with Lits as keys and occurences as values
-litsOccurenceMap :: Ord a => CNFFml a -> M.Map (Lit.Lit a) Int
--- TODO
-litsOccurenceMap a = M.fromList $ L.map (\l -> (l, 0)) (litList a)
-
--- |Looks for the most occurent Lit in CNFFml's Lits
-mostOccurentLit :: CNFFml a -> Maybe (Lit.Lit a)
--- TODO
-mostOccurentLit _ = Nothing
+-- |Chooses the literal to process at each iteration
+findLitToProcess :: (Ord a) =>  CNFFml a -> Maybe (Lit.Lit a)
+findLitToProcess a = case unitaryClause a of
+  Just c -> Just . L.head $ Clause.getLits c
+  Nothing -> mostOccurentLit a

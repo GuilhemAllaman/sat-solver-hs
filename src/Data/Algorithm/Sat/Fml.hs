@@ -84,7 +84,7 @@ toCNF (Not a) = aux a
     aux (Not a) = toCNF a
     aux (And a b) = toCNF $ Or (Not a) (Not b)
     aux (Or a b) = toCNF $ And (Not a) (Not b)
-    aux f = toCNF f
+    aux f = Not $ toCNF f
 
 -- On suppose la formule en entrée sous forme CNF
 findClauses :: Fml a -> [Fml a]
