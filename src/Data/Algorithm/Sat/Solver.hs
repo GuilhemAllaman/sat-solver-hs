@@ -23,6 +23,15 @@ preProcess = CNFFml.fmlToCNFFml . Fml.toCNF . Fml.reduce
 -- Returns an Assignment if one has been found, Nothing if not
 solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
 -- TODO
+{-
+  1. f = preprocess de la formule Fml donnée en entrée
+  2. fs = simplification de f
+    2a. Si une clause est vide, alors la formule n´est pas solvable -> return NOTHING
+    2b. Sinon, on réitère -> etape 2
+  3. Si toutes les clauses ont été traitées et la CNFFml est vide ([]), alors la formule est solvable -> Return just Assignment
+
+PS : renvoyer des tuples (CNFFml a, Assignment a) pour gérer l´insertion de variables dans l´assignment
+-}
 solve _ = Nothing
 
 deleteAllInstance :: (Eq a) => a -> [a] -> [a]
