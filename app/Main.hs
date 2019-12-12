@@ -8,6 +8,8 @@ import qualified Data.Algorithm.Sat.Solver as Solver
 fmlPrinter :: Show a => Fml.Fml a -> String
 fmlPrinter a = "Raw :\n"
   ++ (Fml.prettyPrinter a)
+  ++ "\nReduced :\n"
+  ++ (Fml.prettyPrinter $ Fml.reduce a)
   ++ "\nToCNF :\n"
   ++ (Fml.prettyPrinter $ Fml.toCNF a)
   ++ "\nLits :\n"
@@ -23,3 +25,7 @@ main = putStrLn ("fml1") >> putStrLn (fmlPrinter Ex.fml1)
   >> putStrLn ("fml3") >> putStrLn (fmlPrinter Ex.fml3)
   >> putStrLn ("fml4") >> putStrLn (fmlPrinter Ex.fml4)
   >> putStrLn ("fml5") >> putStrLn (fmlPrinter Ex.fml5)
+  >> putStrLn ("fml6") >> putStrLn (fmlPrinter Ex.fml6)
+  >> putStrLn ("fml7") >> putStrLn (fmlPrinter Ex.fml7)
+  {- >> putStrLn ("fml8") >> putStrLn (fmlPrinter Ex.fml8)
+  >> putStrLn ("fml9") >> putStrLn (fmlPrinter Ex.fml9) -}

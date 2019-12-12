@@ -62,7 +62,7 @@ multOr (x:xs) = Or x (multAnd xs)
 reduce :: Fml a -> Fml a
 reduce (Imply a b) = Or (Not $ reduce a) $ reduce b
 reduce (Equiv a b) = And (Or (Not $ reduce a) $ reduce b) $ Or (Not $ reduce b) $ reduce a
-reduce (XOr a b) = Or (And a $ Not b) (And b $ Not a)
+reduce (XOr a b) = Or (And (reduce a) $ Not (reduce b)) (And (reduce b) $ Not (reduce a))
 reduce (Or a b) = Or (reduce a)  (reduce b)
 reduce (And a b) = And (reduce a) ( reduce b)
 reduce (Not a) = Not $ reduce a
@@ -84,6 +84,7 @@ toCNF (Not a) = aux a
     aux (Not a) = toCNF a
     aux (And a b) = toCNF $ Or (Not a) (Not b)
     aux (Or a b) = toCNF $ And (Not a) (Not b)
+    aux f = toCNF f
 
 -- On suppose la formule en entrée sous forme CNF
 findClauses :: Fml a -> [Fml a]
