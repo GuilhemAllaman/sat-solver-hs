@@ -4,17 +4,52 @@ Sat solver to resolve CNF (Conjunctive Normal Forms)
 
 Written in Haskell
 
-Authors :
-Julien Nivoix jnivoix@etud.u-pem.fr
-Guilhem Allaman gallaman@etud.u-pem.fr
 ESIPE - UPEM - 2019
 
-### Prerequisite
+
+## Authors
+
+Julien Nivoix jnivoix@etud.u-pem.fr
+
+Guilhem Allaman gallaman@etud.u-pem.fr
+
+## Algorithm's pseudo-code
+
+Sat solver algorithm runs as following :
+
+```
+solve(f):
+
+cnf = convert f to cnf format
+a = empty assignment
+
+while not done:
+
+    lit : next literal to process
+    if cnf has a unitary clause 'uc'
+        lit = uc's unique lit
+    else
+        lit = most occuring lit in cnf
+
+    cnf = simplify cnf with lit (remove clauses containing lit from cnf and remove lit's opposite from all cnf's clauses)
+
+    insert lit's variable into a (with lit's boolean value)
+
+    if cnf contains an empty clause (with no lits)
+        f is not satisfiable -> return no assignment
+
+    if cnf has no more clause
+        f is satisfiable with assignment a -> return assignment a
+```
+
+## Install and stack commands
+
+#### Prerequisite
 
 - Install stack with following command :
 `curl -sSL https://get.haskellstack.org/ | sh`
 
-- Add following line at the bottom of to your `~/.bashrc` file :
+- Add following line at the bottom of to your `~/.bashrc` file (in case you want to 'install' compiled programs) :
 `export PATH=$PATH:~/.local/bin`
 
 - Reload your bash profile with following command :
@@ -26,22 +61,30 @@ ESIPE - UPEM - 2019
 - Stack config file is located at `~/.stack/config.yaml`
 add `allow-different-user: true` to avoid permissions errors
 
-
 #### Init
+
+Initiate stack project with following command :
 `stack init`
 
-#### Build 
+#### Build
+
 Following command will build project into .stack-work/dist folder :
 `stack build`
+
 Following command will also copy bin file to your local bin folder ~/.local/bin :
 `stack install`
 
 #### Run
+
+Run program (Main module) with following command :
 `stack exec sat-solver-hs-exe`
 
-#### Generate doc
-`stack haddock`
-
 #### Clean
+
 `stack clean` : delete `.stack-work/dist` folder
 `stack-clean --full` : delete `.stack-work/` folder's files
+
+#### Doc
+
+Generate doc with following command :
+`stack haddock`
