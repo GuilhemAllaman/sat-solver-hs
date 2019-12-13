@@ -10,18 +10,17 @@ import qualified Data.Algorithm.Sat.Solver as Solver
 fmlPrinter :: Fml.Fml Char -> String
 fmlPrinter a = "\nRaw :\n"
   ++ (Fml.prettyPrinter a)
-  ++ "\nReduced :\n"
+  ++ "\n  Reduced :\n"
   ++ (Fml.prettyPrinter $ Fml.reduce a)
-  ++ "\nToCNF :\n"
+  ++ "\n  ToCNF :\n"
   ++ (Fml.prettyPrinter $ Fml.toCNF a)
-  ++ "\nLits :\n"
+  ++ "\n  Lits :\n"
   ++ (show . CNFFml.litList $ propered)
-  ++ "\nLit to process :\n"
+  ++ "\n  Lit to process :\n"
   ++ (show . CNFFml.findLitToProcess $ propered)
-  ++ "\nClauses :\n"
+  ++ "\n  Clauses :\n"
   ++ (show . CNFFml.getClauses $ propered)
-  ++ "\n"
-  ++ "simplify \n"
+  ++ "\n  Simplified :\n"
   ++ (show . CNFFml.getClauses $ CNFFml.simplified propered )
   ++ "\n\n"
   where propered = Solver.preProcess a

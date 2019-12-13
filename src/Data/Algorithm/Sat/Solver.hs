@@ -16,7 +16,7 @@ import qualified Data.Algorithm.Sat.Lit as Lit
 -- |Prepares and cleans a Fml before solving
 -- reduces and converts it to CNF format
 preProcess :: Fml.Fml a -> CNFFml.CNFFml a
-preProcess = CNFFml.fmlToCNFFml . Fml.toCNF . Fml.reduce
+preProcess = CNFFml.fmlToCNFFml . Fml.toCNF
 
 -- |Solves a formula if possible
 -- Returns an Assignment if one has been found, Nothing if not

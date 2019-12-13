@@ -70,21 +70,23 @@ reduce (Final a) = Final a
 
 
 toCNF :: Fml a -> Fml a
-toCNF (Final a) = Final a
-toCNF (And a b) = And (toCNF a) (toCNF b)
-toCNF (Imply a b) = toCNF $ Or (Not a) b
-toCNF (Equiv a b) = toCNF $ Or (And a b) (And (Not a) (Not b))
-toCNF (XOr a b) = toCNF $ Or (And a (Not b)) (And (Not a) b)
-toCNF (Or a b) = multAnd [Or p q | p <- aux a, q <- aux b]
+toCNF = aux . reduce
   where
-    aux = findClauses . toCNF
-toCNF (Not a) = aux a
-  where
-    aux (Final a) = Not (Final a)
-    aux (Not a) = toCNF a
-    aux (And a b) = toCNF $ Or (Not a) (Not b)
-    aux (Or a b) = toCNF $ And (Not a) (Not b)
-    aux f = Not $ toCNF f
+    aux (Final a) = Final a
+    aux (And a b) = And (aux a) (aux b)
+    aux (Imply a b) = aux $ Or (Not a) b
+    aux (Equiv a b) = aux $ Or (And a b) (And (Not a) (Not b))
+    aux (XOr a b) = aux $ Or (And a (Not b)) (And (Not a) b)
+    aux (Or a b) = multAnd [Or p q | p <- auxOr a, q <- auxOr b]
+      where
+        auxOr = findClauses . aux
+    aux (Not a) = auxNot a
+      where
+        auxNot (Final a) = Not (Final a)
+        auxNot (Not a) = aux a
+        auxNot (And a b) = aux $ Or (Not a) (Not b)
+        auxNot (Or a b) = aux $ And (Not a) (Not b)
+        auxNot f = Not $ aux f
 
 -- On suppose la formule en entrée sous forme CNF
 findClauses :: Fml a -> [Fml a]
