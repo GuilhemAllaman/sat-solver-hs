@@ -6,12 +6,14 @@ module Data.Algorithm.Sat.Fml
     multAnd,
     multOr,
     vars,
+    uniqueVars,
     reduce,
     toCNF,
     findClauses
   ) where
 
 import qualified Data.Algorithm.Sat.Var as Var
+import qualified Data.Algorithm.Sat.Utils as Utils
 
 data Fml a =  Or    (Fml a) (Fml a)
             | And   (Fml a) (Fml a)
@@ -27,7 +29,7 @@ mkVar :: a -> Fml a
 mkVar a = Final(Var.mk a)
 
 
-vars :: Fml a -> [Var.Var a]
+vars :: (Ord a) => Fml a -> [Var.Var a]
 vars (Or a b) = vars a ++ vars b
 vars (And a b) = vars a ++ vars b
 vars (Not a) = vars a
@@ -35,6 +37,9 @@ vars (Imply a b) = vars a ++ vars b
 vars (Equiv a b) = vars a ++ vars b
 vars (XOr a b) = vars a ++ vars b
 vars (Final a) = a : []
+
+uniqueVars :: (Ord a) => Fml a -> [Var.Var a]
+uniqueVars = Utils.uniques . vars
 
 
 prettyPrinter :: Show a => Fml a -> String
