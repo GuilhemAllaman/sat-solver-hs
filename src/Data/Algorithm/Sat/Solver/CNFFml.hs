@@ -5,13 +5,16 @@ module Data.Algorithm.Sat.Solver.CNFFml
     unitaryClause,
     litList,
     mostOccurentLit,
-    findLitToProcess
+    findLitToProcess,
+    simplify,
+    simplified
   ) where
 
 import qualified Data.List as L
 import qualified Data.Map as M
 import qualified Data.Algorithm.Sat.Utils as Utils
 import qualified Data.Algorithm.Sat.Fml as Fml
+import qualified Data.Algorithm.Sat.Var as Var
 import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.Algorithm.Sat.Solver.Clause as Clause
 
@@ -45,8 +48,6 @@ unitaryClause = aux . getClauses
       | length (Clause.getLits x) == 1 = Just x
       | otherwise = aux xs
 
-
-
 -- |Returns a list of all Lits contained in the CNFFml
 litList :: CNFFml a -> [Lit.Lit a]
 litList = aux . getClauses
@@ -63,3 +64,15 @@ findLitToProcess :: (Ord a) =>  CNFFml a -> Maybe (Lit.Lit a)
 findLitToProcess a = case unitaryClause a of
   Just c -> Just . L.head $ Clause.getLits c
   Nothing -> mostOccurentLit a
+
+-- |Simplifies a CNFFml by a Literal
+-- Removes clauses containing incoming literal, removes literal's opposite from all clauses
+simplify :: (Eq a) => CNFFml a -> Lit.Lit a -> CNFFml a
+simplify a b = CNFFml ([Clause.Clause(Utils.deleteAllInstance (Lit.neg b) (Clause.getLits x) )| x <- getClauses a, not (b `elem` (Clause.getLits x))])
+
+-- |Print function to debug
+simplified :: CNFFml Char -> CNFFml Char
+simplified a = simplify a (lit (findLitToProcess a))
+  where
+        lit (Just b) = b
+        lit Nothing = Lit.T (Var.mk 'Z')

@@ -1,15 +1,12 @@
 module Data.Algorithm.Sat.Solver
   (
     preProcess,
-    solve,
-    simplify,
-    simplified
+    solve
   ) where
 
 import qualified Data.List as L
 import qualified Data.Algorithm.Sat.Utils as Utils
 import qualified Data.Algorithm.Sat.Fml as Fml
-import qualified Data.Algorithm.Sat.Var as Var
 import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver.Clause as Clause
 import qualified Data.Algorithm.Sat.Assignment as Assignment
@@ -35,12 +32,3 @@ solve :: (Ord a) => Fml.Fml a -> Maybe (Assignment.Assignment a)
 PS : renvoyer des tuples (CNFFml a, Assignment a) pour gérer l´insertion de variables dans l´assignment
 -}
 solve _ = Nothing
-
-simplify :: (Eq a) => CNFFml.CNFFml a -> Lit.Lit a -> CNFFml.CNFFml a
-simplify a b = CNFFml.CNFFml ([Clause.Clause(Utils.deleteAllInstance (Lit.neg b) (Clause.getLits x) )| x <- CNFFml.getClauses a, not (b `elem` (Clause.getLits x))])
-
-simplified :: CNFFml.CNFFml Char -> CNFFml.CNFFml Char
-simplified a = simplify a (lit (CNFFml.findLitToProcess a))
-  where
-        lit (Just b) = b
-        lit Nothing = Lit.T (Var.mk 'Z')
