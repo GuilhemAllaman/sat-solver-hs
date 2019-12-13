@@ -3,7 +3,6 @@ module Data.Algorithm.Sat.Solver.CNFFml
     CNFFml(..),
     fmlToCNFFml,
     unitaryClause,
-    mostCommon,
     litList,
     mostOccurentLit,
     findLitToProcess
@@ -11,7 +10,7 @@ module Data.Algorithm.Sat.Solver.CNFFml
 
 import qualified Data.List as L
 import qualified Data.Map as M
-import qualified Data.Function as F
+import qualified Data.Algorithm.Sat.Utils as Utils
 import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.Algorithm.Sat.Solver.Clause as Clause
@@ -46,10 +45,7 @@ unitaryClause = aux . getClauses
       | length (Clause.getLits x) == 1 = Just x
       | otherwise = aux xs
 
--- |Looks for the most common element of a list
-mostCommon :: (Ord a)  => [a] -> Maybe a
-mostCommon [] = Nothing
-mostCommon a = Just . L.head . L.maximumBy (compare `F.on` L.length) . L.group $ L.sort a
+
 
 -- |Returns a list of all Lits contained in the CNFFml
 litList :: CNFFml a -> [Lit.Lit a]
@@ -60,7 +56,7 @@ litList = aux . getClauses
 
 -- |Looks for the most occurent Lit in all CNFFml's Lits
 mostOccurentLit :: (Ord a) =>  CNFFml a -> Maybe (Lit.Lit a)
-mostOccurentLit a = mostCommon $ litList a
+mostOccurentLit a = Utils.mostCommon $ litList a
 
 -- |Chooses the literal to process at each iteration
 findLitToProcess :: (Ord a) =>  CNFFml a -> Maybe (Lit.Lit a)
