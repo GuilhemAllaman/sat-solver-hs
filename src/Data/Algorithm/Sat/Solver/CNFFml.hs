@@ -7,8 +7,7 @@ module Data.Algorithm.Sat.Solver.CNFFml
     mostOccurentLit,
     findLitToProcess,
     simplify,
-    hasEmptyClause,
-    simplified
+    hasEmptyClause
   ) where
 
 import qualified Data.List as L
@@ -29,14 +28,14 @@ toLit (Fml.Not (Fml.Final a)) = Lit.F a
 
 -- |Converts a Fml formula to the equivalent Clause object
 -- The incoming Fml must be in Clause format (Or, Not or Final)
-toClause :: Fml.Fml a -> Clause.Clause a
-toClause (Fml.Or a b) = Clause.Clause (Clause.getLits (toClause a) ++ Clause.getLits (toClause b))
+toClause :: (Ord a) => Fml.Fml a -> Clause.Clause a
+toClause (Fml.Or a b) = Clause.Clause . Utils.uniques $  Clause.getLits (toClause a) ++ Clause.getLits (toClause b)
 toClause a = Clause.Clause [toLit a]
 
 -- |Converts a Fml formula to the equivalent CNFFml object
 -- The incoming Fml is supposed to be in CFN format
-fmlToCNFFml :: Fml.Fml a -> CNFFml a
-fmlToCNFFml (Fml.And a b) = CNFFml (getClauses (fmlToCNFFml a) ++ getClauses (fmlToCNFFml b))
+fmlToCNFFml :: (Ord a) => Fml.Fml a -> CNFFml a
+fmlToCNFFml (Fml.And a b) = CNFFml $ getClauses (fmlToCNFFml a) ++ getClauses (fmlToCNFFml b)
 fmlToCNFFml a = CNFFml [toClause a]
 
 -- |Looks for an unitary clause in the CNFFml's clauses
@@ -66,10 +65,13 @@ findLitToProcess a = case unitaryClause a of
   Just c -> Just . L.head $ Clause.getLits c
   Nothing -> mostOccurentLit a
 
--- |Simplifies a CNFFml by a Literal
--- Removes clauses containing incoming literal, removes literal's opposite from all clauses
+-- |Simplifies a CNFFml with a Literal
+-- Removes clauses containing incoming literal
+-- Removes literal's opposite from all clauses
 simplify :: (Eq a) => CNFFml a -> Lit.Lit a -> CNFFml a
-simplify a b = CNFFml ([Clause.Clause(Utils.deleteAllInstance (Lit.neg b) (Clause.getLits x) )| x <- getClauses a, not (b `elem` (Clause.getLits x))])
+simplify a b = CNFFml [aux x | x <- getClauses a, not $ b `elem` (Clause.getLits x)]
+  where
+    aux x = Clause.Clause $ Utils.deleteAllInstances (Lit.neg b) (Clause.getLits x)
 
   -- |Checks if a CNFFml has an empty Clause, i.e. a Clause without any literal
 hasEmptyClause :: CNFFml a -> Bool
@@ -79,15 +81,3 @@ hasEmptyClause = aux . getClauses
     aux (x:xs)
       | length (Clause.getLits x) == 0 = True
       | otherwise = aux xs
-
-
-
-
-
-
--- |Print function to debug
-simplified :: CNFFml Char -> CNFFml Char
-simplified a = simplify a (lit (findLitToProcess a))
-  where
-        lit (Just b) = b
-        lit Nothing = Lit.T (Var.mk 'Z')

@@ -88,24 +88,7 @@ toCNF = aux . reduce
         auxNot (Or a b) = aux $ And (Not a) (Not b)
         auxNot f = Not $ aux f
 
--- On suppose la formule en entrée sous forme CNF
+-- Incoming Fml is supposed to be in CNF format
 findClauses :: Fml a -> [Fml a]
 findClauses (And f g) = findClauses f ++ findClauses g
 findClauses f = [f]
-
-{-
-fonction toCNF, pour le cas P ou Q
--> P' = toCNF P
--> Q' = toCNF Q
-P'' = findClauses P'
-Q'' = findClauses Q'
-CNF = [Or a b | a <- P'', b <- Q'']
-
--}
-
-{-
-solver :
-obtenir liste des clauses,
-supposer un litteral vrai ou faux (choix fait si clause unitaire càd une clause avec un unique litteral, ou selon frequence d'occurence),
-si le literal
--}

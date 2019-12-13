@@ -15,19 +15,8 @@ import qualified Data.Algorithm.Sat.Lit as Lit
 
 -- |Prepares and cleans a Fml before solving
 -- reduces and converts it to CNF format
-preProcess :: Fml.Fml a -> CNFFml.CNFFml a
+preProcess :: (Ord a) => Fml.Fml a -> CNFFml.CNFFml a
 preProcess = CNFFml.fmlToCNFFml . Fml.toCNF
-
-{-
-  PSEUDO-CODE :
-  1. f = preprocess de la formule Fml donnée en entrée
-  2. fs = simplification de f
-    2a. Si une clause est vide, alors la formule n´est pas solvable -> return NOTHING
-    2b. Sinon, on réitère -> etape 2
-  3. Si toutes les clauses ont été traitées et la CNFFml est vide ([]), alors la formule est solvable -> Return just Assignment
-
-PS : renvoyer des tuples (CNFFml a, Assignment a) pour gérer l´insertion de variables dans l´assignment
--}
 
 -- |Solves a formula if possible
 -- Returns an Assignment if one has been found, Nothing if not
@@ -37,13 +26,15 @@ solve f = case (solveRec (preProcess f) Assignment.mkEmpty) of
   Nothing -> Nothing
 
 -- |Recursive utilitary function used to solve the formula
+-- Passes the up-to-date assignment through the recursion
 solveRec :: (Ord a) => CNFFml.CNFFml a -> Assignment.Assignment a -> Maybe (CNFFml.CNFFml a, Assignment.Assignment a)
 solveRec f a
   | CNFFml.hasEmptyClause simplified = Nothing
-  | length (CNFFml.getClauses simplified) == 0 = Just (simplified, a)
-  | otherwise = solveRec simplified $ Assignment.insert lit a
+  | length (CNFFml.getClauses simplified) == 0 = Just (simplified, assignment)
+  | otherwise = solveRec simplified assignment
     where
       lit = case (CNFFml.findLitToProcess f) of
         Just l -> l
         Nothing -> error("this algorithm is really s*** !!")
       simplified = CNFFml.simplify f lit
+      assignment = Assignment.insert lit a
