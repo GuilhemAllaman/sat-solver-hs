@@ -56,7 +56,7 @@ multAnd (x:xs) = And x (multAnd xs)
 multOr :: [Fml a] -> Fml a
 multOr [] = error "Empty list"
 multOr (x:[]) = x
-multOr (x:xs) = Or x (multAnd xs)
+multOr (x:xs) = Or x (multOr xs)
 
 
 reduce :: Fml a -> Fml a
