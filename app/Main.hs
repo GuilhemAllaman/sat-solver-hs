@@ -4,8 +4,10 @@ import qualified Data.Algorithm.Sat.Fml.Examples as Ex
 import qualified Data.Algorithm.Sat.Fml as Fml
 import qualified Data.Algorithm.Sat.Lit as Lit
 import qualified Data.Algorithm.Sat.Var as Var
-import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
 import qualified Data.Algorithm.Sat.Solver as Solver
+import qualified Data.Algorithm.Sat.Query as Query
+import qualified Data.Algorithm.Sat.Solver.CNFFml as CNFFml
+
 
 fmlPrinter :: Fml.Fml Char -> String
 fmlPrinter a = "\nRaw :\n"
@@ -14,16 +16,23 @@ fmlPrinter a = "\nRaw :\n"
   ++ (Fml.prettyPrinter $ Fml.reduce a)
   ++ "\n  ToCNF :\n"
   ++ (Fml.prettyPrinter $ Fml.toCNF a)
-  ++ "\n  Lits :\n"
-  ++ (show . CNFFml.litList $ propered)
-  ++ "\n  Lit to process :\n"
-  ++ (show . CNFFml.findLitToProcess $ propered)
+  ++ "\n  All lits :\n"
+  ++ (show . CNFFml.litList $ preProcessed)
   ++ "\n  Clauses :\n"
-  ++ (show . CNFFml.getClauses $ propered)
+  ++ (show . CNFFml.getClauses $ preProcessed)
+  ++ "\n  Lit to process :\n"
+  ++ (show . CNFFml.findLitToProcess $ preProcessed)
   ++ "\n  Simplified :\n"
-  ++ (show . CNFFml.getClauses $ CNFFml.simplified propered )
+  ++ (show . CNFFml.getClauses $ CNFFml.simplified preProcessed)
+  ++ "\n  Satisfiable ?\n"
+  ++ (show $ Query.satisfiable a)
+  ++ "\n  Solved :\n"
+  ++ (solution $ Solver.solve a)
   ++ "\n\n"
-  where propered = Solver.preProcess a
+  where
+    preProcessed = Solver.preProcess a
+    solution (Just a) = show a
+    solution (Nothing) = "No solution found"
 
 main :: IO ()
 main = putStrLn ("fml1") >> putStrLn (fmlPrinter Ex.fml1)

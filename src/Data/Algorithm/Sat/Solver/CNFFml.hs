@@ -7,6 +7,7 @@ module Data.Algorithm.Sat.Solver.CNFFml
     mostOccurentLit,
     findLitToProcess,
     simplify,
+    hasEmptyClause,
     simplified
   ) where
 
@@ -69,6 +70,20 @@ findLitToProcess a = case unitaryClause a of
 -- Removes clauses containing incoming literal, removes literal's opposite from all clauses
 simplify :: (Eq a) => CNFFml a -> Lit.Lit a -> CNFFml a
 simplify a b = CNFFml ([Clause.Clause(Utils.deleteAllInstance (Lit.neg b) (Clause.getLits x) )| x <- getClauses a, not (b `elem` (Clause.getLits x))])
+
+  -- |Checks if a CNFFml has an empty Clause, i.e. a Clause without any literal
+hasEmptyClause :: CNFFml a -> Bool
+hasEmptyClause = aux . getClauses
+  where
+    aux [] = False
+    aux (x:xs)
+      | length (Clause.getLits x) == 0 = True
+      | otherwise = aux xs
+
+
+
+
+
 
 -- |Print function to debug
 simplified :: CNFFml Char -> CNFFml Char
