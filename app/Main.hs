@@ -29,10 +29,11 @@ fmlPrinter a = "\nRaw :\n"
   ++ (show . CNFFml.findLitToProcess $ preProcessed)
   ++ "\n  Simplified :\n"
   ++ (show . CNFFml.getClauses $ CNFFml.simplify preProcessed (lit $ CNFFml.findLitToProcess preProcessed))
-  ++ "\n  Satisfiable ?\n"
-  ++ (show $ Query.satisfiable a)
-  ++ "\n  Solved :\n"
-  ++ (solution $ Solver.solve a)
+  ++ "\n"
+  ++ "\n  Satisfiable ? " ++ (show $ Query.satisfiable a)
+  ++ "\n  Solution : " ++ (solution $ Solver.solve a)
+  ++ "\n  Tautology ? " ++ (show $ Query.tautology a)
+
   ++ "\n\n"
   where
     preProcessed = Solver.preProcess a
