@@ -41,6 +41,54 @@ while not done:
     if cnf has no more clause
         f is satisfiable with assignment a -> return assignment a
 ```
+After some tests we find that not all answers are given by that solution.
+We now have a new algorithm that we try to implement :
+
+```
+Solve(calculToDo){
+    list = literals without negatives
+    request = simplify(calculToDo)
+    solution = list.of(empty)
+    function1(request, list, solution)
+}
+function1(request, list, solution){
+    lit = take the most common literal (or a single) from list
+
+    function2(request, lit, solution)
+    if(lit.isEmpty ==true)
+        return
+    function1(request, list, solution)
+}
+function2(request, lit, solution){
+    requestBis = delete !lit from request, delete clause with lit
+    requestBis' = delete lit from request, delete clause with !lit
+    new = Pick the most common literal (or a single) from list
+    list2 = list.remove(new)
+    if(no clause(requestBis))
+        solution.add(lit)
+    else
+        function3(new , lit, list2, requestBis)
+    if(no clause(requestBis'))
+        solution.add(!lit)   
+    else     
+        function3(new , !lit, list2, requestBis')
+
+}
+function3(new, listof currentLitsTrue, list, request){
+requestBis = delete !new from request, delete clause with new
+    if(no clause)
+        solution.add(new+currentLitsTrue)
+        return    
+    else
+        requestBis' = delete new from request, delete clause with !new
+        if(no clause)
+            solution.add(!new+currentLitsTrue)
+            return
+    newBis = Pick the most common literal (or a single) from list
+    list2 = list.remove(newBis)
+    function3(newBis , currentLitsTrue, list2)        
+}
+```
 
 ## Install and stack commands
 
